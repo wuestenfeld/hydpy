@@ -270,5 +270,5 @@ _____________________
 
 
 
-
+See the latest :download:`coverage report <coverage/index.html>`.
 

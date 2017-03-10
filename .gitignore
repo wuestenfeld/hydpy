@@ -12,3 +12,5 @@ docs
 gui
 helpers
 examples
+hydpy/sphinx/coverage/*
+.coverage

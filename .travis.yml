@@ -16,11 +16,14 @@ install:
   - pip install Cython --install-option="--no-cython-compile"
   - pip install numpy --upgrade
   - pip install matplotlib
+  - pip install coverage
   - pip install travis-sphinx
   - python setup.py install
 # command to run tests
 script: 
   - python test_everything.py test_as_site-package
+  - if [[ $TRAVIS_PYTHON_VERSION = "2.7" ]] ; then coverage run test_everything.py; fi
+  - if [[ $TRAVIS_PYTHON_VERSION = "2.7" ]] ; then coverage html --directory=hydpy/sphinx/coverage; fi
   - if [[ $TRAVIS_PYTHON_VERSION = "2.7" ]] ; then travis-sphinx --source=hydpy/sphinx build; fi
   - if [[ $TRAVIS_PYTHON_VERSION = "2.7" ]] ; then python modify_html.py; fi
 env:
