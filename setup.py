@@ -58,3 +58,6 @@ import hydpy.models
 for name in [fn.split('.')[0] for fn in os.listdir(hydpy.models.__path__[0])]:
     if name != '__init__':
         importlib.import_module('hydpy.models.'+name)
+
+if not 'skip_tests' in sys.argv:
+    import test_everything
