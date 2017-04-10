@@ -1,0 +1,434 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>parametertools &#8212; HydPy 2.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pub" href="pub.html" />
+    <link rel="prev" title="objecttools" href="objecttools.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pub.html" title="pub"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="objecttools.html" title="objecttools"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HydPy 2.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="framework.html" accesskey="U">Framework Modules</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="parametertools">
+<span id="id1"></span><h1>parametertools<a class="headerlink" href="#parametertools" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-hydpy.core.parametertools"></span><dl class="class">
+<dt id="hydpy.core.parametertools.Parameters">
+<em class="property">class </em><code class="descclassname">hydpy.core.parametertools.</code><code class="descname">Parameters</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#Parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.Parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Base class for handling all parameters of a specific model.</p>
+<dl class="method">
+<dt id="hydpy.core.parametertools.Parameters.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#Parameters.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.Parameters.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Needs to be defined for each individual <a class="reference internal" href="#hydpy.core.parametertools.Parameters" title="hydpy.core.parametertools.Parameters"><code class="xref py py-class docutils literal"><span class="pre">Parameters</span></code></a>
+subclass that contains <cite>derived</cite> paramemeters, whose values are
+calculated on the basis of given control parameter values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.Parameters.savecontrols">
+<code class="descname">savecontrols</code><span class="sig-paren">(</span><em>parameterstep=None</em>, <em>simulationstep=None</em>, <em>filename=None</em>, <em>dirname=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#Parameters.savecontrols"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.Parameters.savecontrols" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.Parameters.verify">
+<code class="descname">verify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#Parameters.verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.Parameters.verify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hydpy.core.parametertools.SubParameters">
+<em class="property">class </em><code class="descclassname">hydpy.core.parametertools.</code><code class="descname">SubParameters</code><span class="sig-paren">(</span><em>pars</em>, <em>cls_fastaccess=None</em>, <em>cymodel=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#SubParameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.SubParameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Base class for handling subgroups of model parameters.</p>
+<dl class="classmethod">
+<dt id="hydpy.core.parametertools.SubParameters.getname">
+<em class="property">classmethod </em><code class="descname">getname</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#SubParameters.getname"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.SubParameters.getname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.SubParameters.name">
+<code class="descname">name</code><a class="headerlink" href="#hydpy.core.parametertools.SubParameters.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hydpy.core.parametertools.Parameter">
+<em class="property">class </em><code class="descclassname">hydpy.core.parametertools.</code><code class="descname">Parameter</code><a class="reference internal" href="_modules/hydpy/core/parametertools.html#Parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.Parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="objecttools.html#hydpy.core.objecttools.ValueMath" title="hydpy.core.objecttools.ValueMath"><code class="xref py py-class docutils literal"><span class="pre">hydpy.core.objecttools.ValueMath</span></code></a></p>
+<p>Base class for <a class="reference internal" href="#hydpy.core.parametertools.SingleParameter" title="hydpy.core.parametertools.SingleParameter"><code class="xref py py-class docutils literal"><span class="pre">SingleParameter</span></code></a> and <a class="reference internal" href="#hydpy.core.parametertools.MultiParameter" title="hydpy.core.parametertools.MultiParameter"><code class="xref py py-class docutils literal"><span class="pre">MultiParameter</span></code></a>.</p>
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.Parameter.name">
+<code class="descname">name</code><a class="headerlink" href="#hydpy.core.parametertools.Parameter.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the parameter, which is the name if the instantiating
+subclass of <a class="reference internal" href="#hydpy.core.parametertools.Parameter" title="hydpy.core.parametertools.Parameter"><code class="xref py py-class docutils literal"><span class="pre">Parameter</span></code></a> in lower case letters.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.Parameter.parameterstep">
+<code class="descname">parameterstep</code><a class="headerlink" href="#hydpy.core.parametertools.Parameter.parameterstep" title="Permalink to this definition">¶</a></dt>
+<dd><p>The parameter time step size new parameter values might be related
+to.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.Parameter.simulationstep">
+<code class="descname">simulationstep</code><a class="headerlink" href="#hydpy.core.parametertools.Parameter.simulationstep" title="Permalink to this definition">¶</a></dt>
+<dd><p>The simulation time step size new parameter values might be related
+to.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.Parameter.timefactor">
+<code class="descname">timefactor</code><a class="headerlink" href="#hydpy.core.parametertools.Parameter.timefactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factor to adapt a new parameter value related to
+<a class="reference internal" href="#hydpy.core.parametertools.Parameter.parameterstep" title="hydpy.core.parametertools.Parameter.parameterstep"><code class="xref py py-attr docutils literal"><span class="pre">parameterstep</span></code></a> to a different simulation time step.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.Parameter.trim">
+<code class="descname">trim</code><span class="sig-paren">(</span><em>lower=None</em>, <em>upper=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#Parameter.trim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.Parameter.trim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.Parameter.warntrim">
+<code class="descname">warntrim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#Parameter.warntrim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.Parameter.warntrim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.Parameter.applytimefactor">
+<code class="descname">applytimefactor</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#Parameter.applytimefactor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.Parameter.applytimefactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the given parameter value/values in accordance with the
+actual parameter simulation time step if necessary, and return it/them.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.Parameter.reverttimefactor">
+<code class="descname">reverttimefactor</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#Parameter.reverttimefactor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.Parameter.reverttimefactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the given parameter value/values inversely in accordance
+with the actual parameter simulation time step if necessary, and
+return it/them.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.Parameter.commentrepr">
+<code class="descname">commentrepr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#Parameter.commentrepr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.Parameter.commentrepr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list with comments, e.g. for making string representations
+more informative.  When <code class="xref py py-attr docutils literal"><span class="pre">pub.options.reprcomments</span></code> is set to
+<cite>False</cite>, an empty list is returned.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hydpy.core.parametertools.SingleParameter">
+<em class="property">class </em><code class="descclassname">hydpy.core.parametertools.</code><code class="descname">SingleParameter</code><a class="reference internal" href="_modules/hydpy/core/parametertools.html#SingleParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.SingleParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hydpy.core.parametertools.Parameter" title="hydpy.core.parametertools.Parameter"><code class="xref py py-class docutils literal"><span class="pre">hydpy.core.parametertools.Parameter</span></code></a></p>
+<p>Base class for model parameters handling a single value.</p>
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.SingleParameter.shape">
+<code class="descname">shape</code><a class="headerlink" href="#hydpy.core.parametertools.SingleParameter.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>An empty tuple.  (Only intended for increasing consistent usability
+of <a class="reference internal" href="#hydpy.core.parametertools.SingleParameter" title="hydpy.core.parametertools.SingleParameter"><code class="xref py py-class docutils literal"><span class="pre">SingleParameter</span></code></a> and <a class="reference internal" href="#hydpy.core.parametertools.MultiParameter" title="hydpy.core.parametertools.MultiParameter"><code class="xref py py-class docutils literal"><span class="pre">MultiParameter</span></code></a> instances.)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.SingleParameter.value">
+<code class="descname">value</code><a class="headerlink" href="#hydpy.core.parametertools.SingleParameter.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>The actual parameter value handled by the respective
+<a class="reference internal" href="#hydpy.core.parametertools.SingleParameter" title="hydpy.core.parametertools.SingleParameter"><code class="xref py py-class docutils literal"><span class="pre">SingleParameter</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.SingleParameter.values">
+<code class="descname">values</code><a class="headerlink" href="#hydpy.core.parametertools.SingleParameter.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>The actual parameter value handled by the respective
+<a class="reference internal" href="#hydpy.core.parametertools.SingleParameter" title="hydpy.core.parametertools.SingleParameter"><code class="xref py py-class docutils literal"><span class="pre">SingleParameter</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.SingleParameter.verify">
+<code class="descname">verify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#SingleParameter.verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.SingleParameter.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises a <a class="reference external" href="https://docs.python.org/2.7/library/exceptions.html#exceptions.RuntimeError" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">RuntimeError</span></code></a> if the value of the
+instance of the respective subclass of <a class="reference internal" href="#hydpy.core.parametertools.SingleParameter" title="hydpy.core.parametertools.SingleParameter"><code class="xref py py-class docutils literal"><span class="pre">SingleParameter</span></code></a> is
+<cite>None</cite> or <cite>nan</cite>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.SingleParameter.INIT">
+<code class="descname">INIT</code><em class="property"> = None</em><a class="headerlink" href="#hydpy.core.parametertools.SingleParameter.INIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.SingleParameter.NDIM">
+<code class="descname">NDIM</code><em class="property"> = 0</em><a class="headerlink" href="#hydpy.core.parametertools.SingleParameter.NDIM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.SingleParameter.SPAN">
+<code class="descname">SPAN</code><em class="property"> = (None, None)</em><a class="headerlink" href="#hydpy.core.parametertools.SingleParameter.SPAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.SingleParameter.TIME">
+<code class="descname">TIME</code><em class="property"> = None</em><a class="headerlink" href="#hydpy.core.parametertools.SingleParameter.TIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.SingleParameter.TYPE">
+<code class="descname">TYPE</code><em class="property"> = float</em><a class="headerlink" href="#hydpy.core.parametertools.SingleParameter.TYPE" title="Permalink to this definition">¶</a></dt>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hydpy.core.parametertools.MultiParameter">
+<em class="property">class </em><code class="descclassname">hydpy.core.parametertools.</code><code class="descname">MultiParameter</code><a class="reference internal" href="_modules/hydpy/core/parametertools.html#MultiParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hydpy.core.parametertools.Parameter" title="hydpy.core.parametertools.Parameter"><code class="xref py py-class docutils literal"><span class="pre">hydpy.core.parametertools.Parameter</span></code></a></p>
+<p>Base class for model parameters handling multiple values.</p>
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.MultiParameter.shape">
+<code class="descname">shape</code><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>A tuple containing the lengths in all dimensions of the parameter
+values.  Note that setting a new shape results in a loss of all values
+of the respective parameter.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.MultiParameter.value">
+<code class="descname">value</code><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>The actual parameter value(s) handled by the respective
+<a class="reference internal" href="#hydpy.core.parametertools.Parameter" title="hydpy.core.parametertools.Parameter"><code class="xref py py-class docutils literal"><span class="pre">Parameter</span></code></a> instance.  For consistency, <cite>value</cite> and <cite>values</cite>
+can always be used interchangeably.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.MultiParameter.values">
+<code class="descname">values</code><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.values" title="Permalink to this definition">¶</a></dt>
+<dd><p>The actual parameter value(s) handled by the respective
+<a class="reference internal" href="#hydpy.core.parametertools.Parameter" title="hydpy.core.parametertools.Parameter"><code class="xref py py-class docutils literal"><span class="pre">Parameter</span></code></a> instance.  For consistency, <cite>value</cite> and <cite>values</cite>
+can always be used interchangeably.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.MultiParameter.verifymask">
+<code class="descname">verifymask</code><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.verifymask" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numpy array with all entries being <cite>True</cite> of the same
+shape as the values handled by the respective parameter.  All entries
+beeing <cite>True</cite> indicates that the method <a class="reference internal" href="#hydpy.core.parametertools.MultiParameter.verify" title="hydpy.core.parametertools.MultiParameter.verify"><code class="xref py py-func docutils literal"><span class="pre">verify()</span></code></a>
+checks all entries of the numpy array storing the parameter values.
+Overwrite <a class="reference internal" href="#hydpy.core.parametertools.MultiParameter.verify" title="hydpy.core.parametertools.MultiParameter.verify"><code class="xref py py-func docutils literal"><span class="pre">verify()</span></code></a> for <a class="reference internal" href="#hydpy.core.parametertools.MultiParameter" title="hydpy.core.parametertools.MultiParameter"><code class="xref py py-class docutils literal"><span class="pre">MultiParameter</span></code></a>
+subclasses, where certain entries do not to be checked.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.MultiParameter.verify">
+<code class="descname">verify</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#MultiParameter.verify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raises a <a class="reference external" href="https://docs.python.org/2.7/library/exceptions.html#exceptions.RuntimeError" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">RuntimeError</span></code></a> if at least one of the
+required values of the instance of the respective subclass of
+<a class="reference internal" href="#hydpy.core.parametertools.MultiParameter" title="hydpy.core.parametertools.MultiParameter"><code class="xref py py-class docutils literal"><span class="pre">MultiParameter</span></code></a> is <cite>None</cite> or <cite>nan</cite>. The property
+<a class="reference internal" href="#hydpy.core.parametertools.MultiParameter.verifymask" title="hydpy.core.parametertools.MultiParameter.verifymask"><code class="xref py py-func docutils literal"><span class="pre">verifymask()</span></code></a> defines, which values are
+considered to be necessary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.MultiParameter.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#MultiParameter.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a deep copy of the parameter values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.MultiParameter.compressrepr">
+<code class="descname">compressrepr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#MultiParameter.compressrepr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.compressrepr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a compressed parameter value string, which is (in
+accordance with <a class="reference internal" href="#hydpy.core.parametertools.MultiParameter.NDIM" title="hydpy.core.parametertools.MultiParameter.NDIM"><code class="xref py py-attr docutils literal"><span class="pre">NDIM</span></code></a>) contained in a
+nested list.  If the compression fails, a
+<a class="reference external" href="https://docs.python.org/2.7/library/exceptions.html#exceptions.NotImplementedError" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">NotImplementedError</span></code></a> is raised.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.MultiParameter.NDIM">
+<code class="descname">NDIM</code><em class="property"> = 1</em><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.NDIM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.MultiParameter.SPAN">
+<code class="descname">SPAN</code><em class="property"> = (None, None)</em><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.SPAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.MultiParameter.TIME">
+<code class="descname">TIME</code><em class="property"> = None</em><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.TIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.MultiParameter.TYPE">
+<code class="descname">TYPE</code><em class="property"> = float</em><a class="headerlink" href="#hydpy.core.parametertools.MultiParameter.TYPE" title="Permalink to this definition">¶</a></dt>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hydpy.core.parametertools.ZipParameter">
+<em class="property">class </em><code class="descclassname">hydpy.core.parametertools.</code><code class="descname">ZipParameter</code><a class="reference internal" href="_modules/hydpy/core/parametertools.html#ZipParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.ZipParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hydpy.core.parametertools.MultiParameter" title="hydpy.core.parametertools.MultiParameter"><code class="xref py py-class docutils literal"><span class="pre">hydpy.core.parametertools.MultiParameter</span></code></a></p>
+<p>Base class for model parameters handling multiple values that offers
+additional keyword zipping fuctionality.</p>
+<p>When inheriting an actual parameter class from <a class="reference internal" href="#hydpy.core.parametertools.ZipParameter" title="hydpy.core.parametertools.ZipParameter"><code class="xref py py-class docutils literal"><span class="pre">ZipParameter</span></code></a> one
+needs to define suitable class constants
+<a class="reference internal" href="#hydpy.core.parametertools.ZipParameter.REQUIRED_VALUES" title="hydpy.core.parametertools.ZipParameter.REQUIRED_VALUES"><code class="xref py py-const docutils literal"><span class="pre">REQUIRED_VALUES</span></code></a> (a <code class="xref py py-class docutils literal"><span class="pre">tuple</span></code>) and
+<a class="reference internal" href="#hydpy.core.parametertools.ZipParameter.MODEL_CONSTANTS" title="hydpy.core.parametertools.ZipParameter.MODEL_CONSTANTS"><code class="xref py py-const docutils literal"><span class="pre">MODEL_CONSTANTS</span></code></a> (a <a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a>).  Additionally,
+a property named <cite>refparameter</cite> must be defined.</p>
+<p>The implementation and functioning of subclasses of <a class="reference internal" href="#hydpy.core.parametertools.ZipParameter" title="hydpy.core.parametertools.ZipParameter"><code class="xref py py-class docutils literal"><span class="pre">ZipParameter</span></code></a>
+is best illustrated by an example: see the documentation of the class
+<a class="reference internal" href="HydPy-H-Land.html#hydpy.models.hland.hland_parameters.MultiParameter" title="hydpy.models.hland.hland_parameters.MultiParameter"><code class="xref py py-class docutils literal"><span class="pre">MultiParameter</span></code></a> of the
+HydPy-H-Land model.</p>
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.ZipParameter.REQUIRED_VALUES">
+<code class="descname">REQUIRED_VALUES</code><em class="property"> = ()</em><a class="headerlink" href="#hydpy.core.parametertools.ZipParameter.REQUIRED_VALUES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.ZipParameter.MODEL_CONSTANTS">
+<code class="descname">MODEL_CONSTANTS</code><em class="property"> = {}</em><a class="headerlink" href="#hydpy.core.parametertools.ZipParameter.MODEL_CONSTANTS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hydpy.core.parametertools.ZipParameter.verifymask">
+<code class="descname">verifymask</code><a class="headerlink" href="#hydpy.core.parametertools.ZipParameter.verifymask" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numpy array of the same shape as the value array handled
+by the respective parameter.  <cite>True</cite> entries indicate that certain
+parameter values are required, which depends on the tuple
+<a class="reference internal" href="#hydpy.core.parametertools.ZipParameter.REQUIRED_VALUES" title="hydpy.core.parametertools.ZipParameter.REQUIRED_VALUES"><code class="xref py py-const docutils literal"><span class="pre">REQUIRED_VALUES</span></code></a> of the respective subclass.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hydpy.core.parametertools.ZipParameter.compressrepr">
+<code class="descname">compressrepr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#ZipParameter.compressrepr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.ZipParameter.compressrepr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a compressed parameter value string, which is (in
+accordance with <code class="xref py py-attr docutils literal"><span class="pre">NDIM</span></code>) contained in a nested list.  If the
+compression fails, a <a class="reference external" href="https://docs.python.org/2.7/library/exceptions.html#exceptions.NotImplementedError" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">NotImplementedError</span></code></a> is
+raised.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hydpy.core.parametertools.IndexParameter">
+<em class="property">class </em><code class="descclassname">hydpy.core.parametertools.</code><code class="descname">IndexParameter</code><a class="reference internal" href="_modules/hydpy/core/parametertools.html#IndexParameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.IndexParameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hydpy.core.parametertools.MultiParameter" title="hydpy.core.parametertools.MultiParameter"><code class="xref py py-class docutils literal"><span class="pre">hydpy.core.parametertools.MultiParameter</span></code></a></p>
+<dl class="method">
+<dt id="hydpy.core.parametertools.IndexParameter.setreference">
+<code class="descname">setreference</code><span class="sig-paren">(</span><em>indexarray</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hydpy/core/parametertools.html#IndexParameter.setreference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hydpy.core.parametertools.IndexParameter.setreference" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="objecttools.html"
+                        title="previous chapter">objecttools</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pub.html"
+                        title="next chapter">pub</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/parametertools.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pub.html" title="pub"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="objecttools.html" title="objecttools"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HydPy 2.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="framework.html" >Framework Modules</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Christoph Tyralla.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>

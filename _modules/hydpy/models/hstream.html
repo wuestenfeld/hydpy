@@ -1,0 +1,423 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>hydpy.models.hstream &#8212; HydPy 2.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">HydPy 2.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for hydpy.models.hstream</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># import...</span>
+<span class="c1"># ...from standard library</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="c1"># ...third party</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="c1"># ...HydPy specific</span>
+<span class="kn">from</span> <span class="nn">hydpy.core</span> <span class="k">import</span> <span class="n">objecttools</span>
+<span class="kn">from</span> <span class="nn">hydpy.core</span> <span class="k">import</span> <span class="n">modeltools</span>
+<span class="kn">from</span> <span class="nn">hydpy.core</span> <span class="k">import</span> <span class="n">parametertools</span>
+<span class="kn">from</span> <span class="nn">hydpy.core</span> <span class="k">import</span> <span class="n">sequencetools</span>
+<span class="c1"># Load the required `magic` functions into the local namespace.</span>
+<span class="kn">from</span> <span class="nn">hydpy.core.magictools</span> <span class="k">import</span> <span class="n">parameterstep</span>
+<span class="kn">from</span> <span class="nn">hydpy.core.magictools</span> <span class="k">import</span> <span class="n">simulationstep</span>
+<span class="kn">from</span> <span class="nn">hydpy.core.magictools</span> <span class="k">import</span> <span class="n">controlcheck</span>
+<span class="kn">from</span> <span class="nn">hydpy.core.magictools</span> <span class="k">import</span> <span class="n">Tester</span>
+<span class="kn">from</span> <span class="nn">hydpy.cythons.modelutils</span> <span class="k">import</span> <span class="n">Cythonizer</span>
+
+<span class="c1">###############################################################################</span>
+<span class="c1"># Model</span>
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="n">modeltools</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The HydPy-H-Stream model.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Model.run"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Model.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Apply the routing equation.</span>
+
+<span class="sd">        Required derived parameters:</span>
+<span class="sd">          :class:`NmbSegments`</span>
+<span class="sd">          :class:`C1`</span>
+<span class="sd">          :class:`C2`</span>
+<span class="sd">          :class:`C3`</span>
+
+<span class="sd">        Updated state sequence:</span>
+<span class="sd">          :class:`QJoints`</span>
+
+<span class="sd">        Basic equation:</span>
+<span class="sd">          :math:`Q_{space+1,time+1} =</span>
+<span class="sd">          c1 \\cdot Q_{space,time+1} +</span>
+<span class="sd">          c2 \\cdot Q_{space,time} +</span>
+<span class="sd">          c3 \\cdot Q_{space+1,time}`</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Firstly, define a reach divided into 4 segments:</span>
+
+<span class="sd">            &gt;&gt;&gt; from hydpy.models.hstream import *</span>
+<span class="sd">            &gt;&gt;&gt; parameterstep(&#39;1d&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; derived.nmbsegments(4)</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints.shape = 5</span>
+
+<span class="sd">            Zero damping is achieved through the following coefficients:</span>
+
+<span class="sd">            &gt;&gt;&gt; derived.c1(0.)</span>
+<span class="sd">            &gt;&gt;&gt; derived.c2(1.)</span>
+<span class="sd">            &gt;&gt;&gt; derived.c3(0.)</span>
+
+<span class="sd">            For initialization, assume a base flow of 2m³/s:</span>
+
+<span class="sd">            &gt;&gt;&gt; states.qjoints.old = 2.</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints.new = 2.</span>
+
+<span class="sd">            Through successive assignements of different discharge values</span>
+<span class="sd">            to the upper junction one can see, that these discharge values</span>
+<span class="sd">            are simply shifted from each junction to the respective lower</span>
+<span class="sd">            junction at each time step:</span>
+
+<span class="sd">            &gt;&gt;&gt; states.qjoints[0] = 5.</span>
+<span class="sd">            &gt;&gt;&gt; model.run(0)</span>
+<span class="sd">            &gt;&gt;&gt; model.new2old()</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints</span>
+<span class="sd">            qjoints(5.0, 2.0, 2.0, 2.0, 2.0)</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints[0] = 8.</span>
+<span class="sd">            &gt;&gt;&gt; model.run(1)</span>
+<span class="sd">            &gt;&gt;&gt; model.new2old()</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints</span>
+<span class="sd">            qjoints(8.0, 5.0, 2.0, 2.0, 2.0)</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints[0] = 6.</span>
+<span class="sd">            &gt;&gt;&gt; model.run(1)</span>
+<span class="sd">            &gt;&gt;&gt; model.new2old()</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints</span>
+<span class="sd">            qjoints(6.0, 8.0, 5.0, 2.0, 2.0)</span>
+
+<span class="sd">            With the maximum damping allowed, the values of the derived</span>
+<span class="sd">            parameters are:</span>
+
+<span class="sd">            &gt;&gt;&gt; derived.c1(.5)</span>
+<span class="sd">            &gt;&gt;&gt; derived.c2(.0)</span>
+<span class="sd">            &gt;&gt;&gt; derived.c3(.5)</span>
+
+<span class="sd">            Assuming again a base flow of 2m³/s and the same input values</span>
+<span class="sd">            results in:</span>
+
+<span class="sd">            &gt;&gt;&gt; states.qjoints.old = 2.</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints.new = 2.</span>
+
+<span class="sd">            &gt;&gt;&gt; states.qjoints[0] = 5.</span>
+<span class="sd">            &gt;&gt;&gt; model.run(0)</span>
+<span class="sd">            &gt;&gt;&gt; model.new2old()</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints</span>
+<span class="sd">            qjoints(5.0, 3.5, 2.75, 2.375, 2.1875)</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints[0] = 8.</span>
+<span class="sd">            &gt;&gt;&gt; model.run(1)</span>
+<span class="sd">            &gt;&gt;&gt; model.new2old()</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints</span>
+<span class="sd">            qjoints(8.0, 5.75, 4.25, 3.3125, 2.75)</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints[0] = 6.</span>
+<span class="sd">            &gt;&gt;&gt; model.run(1)</span>
+<span class="sd">            &gt;&gt;&gt; model.new2old()</span>
+<span class="sd">            &gt;&gt;&gt; states.qjoints</span>
+<span class="sd">            qjoints(6.0, 5.875, 5.0625, 4.1875, 3.46875)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">der</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">derived</span><span class="o">.</span><span class="n">fastaccess</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">fastaccess_new</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">fastaccess_old</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">der</span><span class="o">.</span><span class="n">nmbsegments</span><span class="p">):</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">qjoints</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">der</span><span class="o">.</span><span class="n">c1</span><span class="o">*</span><span class="n">new</span><span class="o">.</span><span class="n">qjoints</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span>
+                                <span class="n">der</span><span class="o">.</span><span class="n">c2</span><span class="o">*</span><span class="n">old</span><span class="o">.</span><span class="n">qjoints</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span>
+                                <span class="n">der</span><span class="o">.</span><span class="n">c3</span><span class="o">*</span><span class="n">old</span><span class="o">.</span><span class="n">qjoints</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Model.updateinlets"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Model.updateinlets">[docs]</a>    <span class="k">def</span> <span class="nf">updateinlets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assign the actual value of the inlet sequence to the upper joint</span>
+<span class="sd">        of the subreach upstream.&quot;&quot;&quot;</span>
+        <span class="n">sta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">fastaccess</span>
+        <span class="n">inl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">inlets</span><span class="o">.</span><span class="n">fastaccess</span>
+        <span class="n">sta</span><span class="o">.</span><span class="n">qjoints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">inl</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Model.updateoutlets"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Model.updateoutlets">[docs]</a>    <span class="k">def</span> <span class="nf">updateoutlets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assing the actual value of the lower joint of of the subreach</span>
+<span class="sd">        downstream to the outlet sequence.&quot;&quot;&quot;</span>
+        <span class="n">der</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">derived</span><span class="o">.</span><span class="n">fastaccess</span>
+        <span class="n">sta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">fastaccess</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">outlets</span><span class="o">.</span><span class="n">fastaccess</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sta</span><span class="o">.</span><span class="n">qjoints</span><span class="p">[</span><span class="n">der</span><span class="o">.</span><span class="n">nmbsegments</span><span class="p">]</span></div></div>
+
+<span class="c1">###############################################################################</span>
+<span class="c1"># Parameter definitions</span>
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="Lag"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Lag">[docs]</a><span class="k">class</span> <span class="nc">Lag</span><span class="p">(</span><span class="n">parametertools</span><span class="o">.</span><span class="n">SingleParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Time lag between inflow and outflow [T].&quot;&quot;&quot;</span>
+    <span class="n">NDIM</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">TIME</span><span class="p">,</span> <span class="n">SPAN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Damp"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Damp">[docs]</a><span class="k">class</span> <span class="nc">Damp</span><span class="p">(</span><span class="n">parametertools</span><span class="o">.</span><span class="n">SingleParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Damping of the hydrograph [-].&quot;&quot;&quot;</span>
+    <span class="n">NDIM</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">TIME</span><span class="p">,</span> <span class="n">SPAN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ControlParameters"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.ControlParameters">[docs]</a><span class="k">class</span> <span class="nc">ControlParameters</span><span class="p">(</span><span class="n">parametertools</span><span class="o">.</span><span class="n">SubParameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Control parameters of hstream, directly defined by the user.&quot;&quot;&quot;</span>
+    <span class="n">_PARCLASSES</span> <span class="o">=</span> <span class="p">(</span><span class="n">Lag</span><span class="p">,</span> <span class="n">Damp</span><span class="p">)</span></div>
+
+<span class="c1"># Derived Parameters ##########################################################</span>
+
+<div class="viewcode-block" id="NmbSegments"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.NmbSegments">[docs]</a><span class="k">class</span> <span class="nc">NmbSegments</span><span class="p">(</span><span class="n">parametertools</span><span class="o">.</span><span class="n">SingleParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Number of river segments [-].&quot;&quot;&quot;</span>
+    <span class="n">NDIM</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">TIME</span><span class="p">,</span> <span class="n">SPAN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="C1"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.C1">[docs]</a><span class="k">class</span> <span class="nc">C1</span><span class="p">(</span><span class="n">parametertools</span><span class="o">.</span><span class="n">SingleParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;First coefficient of the muskingum working formula [-].&quot;&quot;&quot;</span>
+    <span class="n">NDIM</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">TIME</span><span class="p">,</span> <span class="n">SPAN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="C2"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.C2">[docs]</a><span class="k">class</span> <span class="nc">C2</span><span class="p">(</span><span class="n">parametertools</span><span class="o">.</span><span class="n">SingleParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Second coefficient of the muskingum working formula [-].&quot;&quot;&quot;</span>
+    <span class="n">NDIM</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">TIME</span><span class="p">,</span> <span class="n">SPAN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="C3"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.C3">[docs]</a><span class="k">class</span> <span class="nc">C3</span><span class="p">(</span><span class="n">parametertools</span><span class="o">.</span><span class="n">SingleParameter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Third coefficient of the muskingum working formula [-].&quot;&quot;&quot;</span>
+    <span class="n">NDIM</span><span class="p">,</span> <span class="n">TYPE</span><span class="p">,</span> <span class="n">TIME</span><span class="p">,</span> <span class="n">SPAN</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DerivedParameters"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.DerivedParameters">[docs]</a><span class="k">class</span> <span class="nc">DerivedParameters</span><span class="p">(</span><span class="n">parametertools</span><span class="o">.</span><span class="n">SubParameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Derived parameters of hstream, indirectly defined by the user.&quot;&quot;&quot;</span>
+    <span class="n">_PARCLASSES</span> <span class="o">=</span> <span class="p">(</span><span class="n">NmbSegments</span><span class="p">,</span> <span class="n">C1</span><span class="p">,</span> <span class="n">C2</span><span class="p">,</span> <span class="n">C3</span><span class="p">)</span></div>
+
+<span class="c1"># Parameter container #########################################################</span>
+
+<div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">(</span><span class="n">parametertools</span><span class="o">.</span><span class="n">Parameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;All parameters of the hstream model.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Parameters.update"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Parameters.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determines the values of the parameters handled by</span>
+<span class="sd">        :class:`DerivedParameters` based on the values of the parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_nmbsegments</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_coefficients</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Parameters.calc_nmbsegments"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Parameters.calc_nmbsegments">[docs]</a>    <span class="k">def</span> <span class="nf">calc_nmbsegments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determines in how many segments the whole reach needs to be</span>
+<span class="sd">        divided to approximate the desired lag time via integer rounding.</span>
+<span class="sd">        Adjusts the shape of sequence :class:`QJoints` additionally.</span>
+
+<span class="sd">        Required control parameters:</span>
+<span class="sd">          :class:`Lag`</span>
+
+<span class="sd">        Calculated derived parameters:</span>
+<span class="sd">          :class:`NmbSegments`</span>
+
+<span class="sd">        Prepared state sequence:</span>
+<span class="sd">          :class:`QJoints`</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">            Define a lag time of 1.4 days and a simulation step size of 12</span>
+<span class="sd">            hours:</span>
+
+<span class="sd">            &gt;&gt;&gt; from hydpy.models.hstream import *</span>
+<span class="sd">            &gt;&gt;&gt; parameterstep(&#39;1d&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; simulationstep(&#39;12h&#39;, warn=False)</span>
+<span class="sd">            &gt;&gt;&gt; lag(1.4)</span>
+
+<span class="sd">            Then the actual lag value for the simulation step size is 2.8</span>
+
+<span class="sd">            &gt;&gt;&gt; lag</span>
+<span class="sd">            lag(1.4)</span>
+<span class="sd">            &gt;&gt;&gt; lag.value</span>
+<span class="sd">            2.8</span>
+
+<span class="sd">            Through rounding the number of segments is determined:</span>
+
+<span class="sd">            &gt;&gt;&gt; model.parameters.calc_nmbsegments()</span>
+<span class="sd">            &gt;&gt;&gt; derived.nmbsegments</span>
+<span class="sd">            nmbsegments(3)</span>
+
+<span class="sd">            The number of joints is always the number of segments plus one:</span>
+
+<span class="sd">            &gt;&gt;&gt; states.qjoints.shape</span>
+<span class="sd">            (4,)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">con</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span>
+        <span class="n">der</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derived</span>
+        <span class="n">der</span><span class="o">.</span><span class="n">nmbsegments</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">con</span><span class="o">.</span><span class="n">lag</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">sequences</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">qjoints</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">der</span><span class="o">.</span><span class="n">nmbsegments</span><span class="o">+</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Parameters.calc_coefficients"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Parameters.calc_coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">calc_coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the Muskingum coefficients.</span>
+
+<span class="sd">        Required control parameters:</span>
+<span class="sd">          :class:`Damp`</span>
+
+<span class="sd">        Calculated derived parameters:</span>
+<span class="sd">          :class:`C1`</span>
+<span class="sd">          :class:`C2`</span>
+<span class="sd">          :class:`C3`</span>
+
+<span class="sd">        Basic equations:</span>
+<span class="sd">          :math:`c_1 = \\frac{Damp}{1+Damp}`\n</span>
+<span class="sd">          :math:`c_3 = \\frac{Damp}{1+Damp}`\n</span>
+<span class="sd">          :math:`c_2 = 1.-c_1-c_3`</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            If no damping is required, the coeffients are:</span>
+
+<span class="sd">            &gt;&gt;&gt; from hydpy.models.hstream import *</span>
+<span class="sd">            &gt;&gt;&gt; parameterstep(&#39;1d&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; damp(0.)</span>
+<span class="sd">            &gt;&gt;&gt; model.parameters.calc_coefficients()</span>
+<span class="sd">            &gt;&gt;&gt; derived.c1, derived.c2, derived.c3</span>
+<span class="sd">            (c1(0.0), c2(1.0), c3(0.0))</span>
+
+<span class="sd">            The strongest damping is achieved through:</span>
+
+<span class="sd">            &gt;&gt;&gt; damp(1.)</span>
+<span class="sd">            &gt;&gt;&gt; model.parameters.calc_coefficients()</span>
+<span class="sd">            &gt;&gt;&gt; derived.c1, derived.c2, derived.c3</span>
+<span class="sd">            (c1(0.5), c2(0.0), c3(0.5))</span>
+
+<span class="sd">            And finally an intermediate example:</span>
+
+<span class="sd">            &gt;&gt;&gt; damp(.25)</span>
+<span class="sd">            &gt;&gt;&gt; model.parameters.calc_coefficients()</span>
+<span class="sd">            &gt;&gt;&gt; derived.c1, derived.c2, derived.c3</span>
+<span class="sd">            (c1(0.2), c2(0.6), c3(0.2))</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">con</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">control</span>
+        <span class="n">der</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derived</span>
+        <span class="n">der</span><span class="o">.</span><span class="n">c1</span> <span class="o">=</span> <span class="n">der</span><span class="o">.</span><span class="n">c3</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">con</span><span class="o">.</span><span class="n">damp</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">con</span><span class="o">.</span><span class="n">damp</span><span class="p">),</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">der</span><span class="o">.</span><span class="n">c2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">der</span><span class="o">.</span><span class="n">c1</span><span class="o">-</span><span class="n">der</span><span class="o">.</span><span class="n">c3</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span></div></div>
+
+<span class="c1">###############################################################################</span>
+<span class="c1"># Sequence Definitions</span>
+<span class="c1">###############################################################################</span>
+
+<span class="c1"># State Sequences #############################################################</span>
+
+<div class="viewcode-block" id="QJoints"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.QJoints">[docs]</a><span class="k">class</span> <span class="nc">QJoints</span><span class="p">(</span><span class="n">sequencetools</span><span class="o">.</span><span class="n">StateSequence</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Runoff at the segment junctions [m³/s].&quot;&quot;&quot;</span>
+    <span class="n">NDIM</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">,</span> <span class="n">SPAN</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sequencetools</span><span class="o">.</span><span class="n">StateSequence</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">sequencetools</span><span class="o">.</span><span class="n">StateSequence</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Note that, due to the following problem, the&#39;</span>
+                          <span class="s1">&#39;affected HydPy-H-Stream model could be initialised &#39;</span>
+                          <span class="s1">&#39;with an averaged value only: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">message</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StateSequences"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.StateSequences">[docs]</a><span class="k">class</span> <span class="nc">StateSequences</span><span class="p">(</span><span class="n">sequencetools</span><span class="o">.</span><span class="n">StateSequences</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;State sequences of the hstream model.&quot;&quot;&quot;</span>
+    <span class="n">_SEQCLASSES</span> <span class="o">=</span> <span class="p">(</span><span class="n">QJoints</span><span class="p">,)</span></div>
+
+<span class="c1"># Link Sequences ##############################################################</span>
+
+<div class="viewcode-block" id="Q"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Q">[docs]</a><span class="k">class</span> <span class="nc">Q</span><span class="p">(</span><span class="n">sequencetools</span><span class="o">.</span><span class="n">LinkSequence</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Runoff [m³/s].&quot;&quot;&quot;</span>
+    <span class="n">NDIM</span><span class="p">,</span> <span class="n">NUMERIC</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="InletSequences"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.InletSequences">[docs]</a><span class="k">class</span> <span class="nc">InletSequences</span><span class="p">(</span><span class="n">sequencetools</span><span class="o">.</span><span class="n">LinkSequences</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Upstream link sequences of the hstream model.&quot;&quot;&quot;</span>
+    <span class="n">_SEQCLASSES</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q</span><span class="p">,)</span></div>
+
+<div class="viewcode-block" id="OutletSequences"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.OutletSequences">[docs]</a><span class="k">class</span> <span class="nc">OutletSequences</span><span class="p">(</span><span class="n">sequencetools</span><span class="o">.</span><span class="n">LinkSequences</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Downstream link sequences of the hstream model.&quot;&quot;&quot;</span>
+    <span class="n">_SEQCLASSES</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q</span><span class="p">,)</span></div>
+
+<span class="c1"># Sequence container ##########################################################</span>
+
+<div class="viewcode-block" id="Sequences"><a class="viewcode-back" href="../../../HydPy-H-Stream.html#hydpy.models.hstream.Sequences">[docs]</a><span class="k">class</span> <span class="nc">Sequences</span><span class="p">(</span><span class="n">sequencetools</span><span class="o">.</span><span class="n">Sequences</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;All sequences of the hstream model.&quot;&quot;&quot;</span></div>
+
+
+<span class="n">tester</span> <span class="o">=</span> <span class="n">Tester</span><span class="p">()</span>
+<span class="n">cythonizer</span> <span class="o">=</span> <span class="n">Cythonizer</span><span class="p">()</span>
+<span class="n">cythonizer</span><span class="o">.</span><span class="n">complete</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">HydPy 2.0.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Christoph Tyralla.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+    </div>
+  </body>
+</html>
